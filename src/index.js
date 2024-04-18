@@ -6,19 +6,19 @@ ReactDOM.render(
     <React.StrictMode>
         <Stats />
     </React.StrictMode>,
-    document.getElementById("stats")
+    document.getElementById("statsDiv")
 );
 
 ReactDOM.render(
     <React.StrictMode>
         <Question />
     </React.StrictMode>,
-    document.getElementById("question")
+    document.getElementById("questionDiv")
 );
 
 ReactDOM.render(
     <React.StrictMode>
         <Answer />
     </React.StrictMode>,
-    document.getElementById("answer")
+    document.getElementById("answerDiv")
 );
