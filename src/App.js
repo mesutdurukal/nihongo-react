@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const hostIp = "https://d092-2407-c800-1f32-875-4959-f8e7-57c5-c9f1.ngrok-free.app/"; // Make sure this is correct and reachable
+const hostIp = "https://0497-2a09-bac0-1000-8f-00-17e-81.ngrok-free.app/"; // Make sure this is correct and reachable
 const requestOptions = {
     method: "GET",
     headers: new Headers({"ngrok-skip-browser-warning": "test"}),
@@ -27,47 +27,31 @@ function Stats() {
     const [stats, setStats] = useState('');
     useEffect(() => {getStats().then(setStats)}, []);
     return <div> {stats}</div>
-
 }
 
 function Question() {
     const [data, setData] = useState({});
     const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
-
     const fetchQuestion = () => {
-        setIsLoading(true);
         fetch(hostIp + 'getQuestion', requestOptions)
             .then(response => response.json())
-            .then(data => {
-                setData(data);
-                setIsLoading(false);
-            })
+            .then(data => setData(data))
             .catch(error => {
-                console.error('Error:', error);
                 setError('Failed to fetch data');
-                setIsLoading(false);
             });
     };
+    useEffect(() => fetchQuestion(), []); // Empty dependency array ensures this runs only once on mount
 
-    useEffect(() => {
-        fetchQuestion();
-    }, []); // Empty dependency array ensures this runs only once on mount
-
-    if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
     return (
         <>
-            <div>
-                {["pickMode", "category"].map(key => (
-                    <span key={key}>{key}: {data[key]}, </span>
-                ))}
+            <>
+                <span>pickMode: {data.pickMode}, </span>
+                <span>category: {data.category}, </span>
                 <span>accuracy: {data.correctlyAnswered}/{data.totalAnswered}</span>
-            </div>
-            <div style={{ fontSize: '24px' }}>
-                question: {data.question}
-            </div>
+            </>
+            <div style={{ fontSize: '24px' }}> question: {data.question} </div>
         </>
     );
 }
