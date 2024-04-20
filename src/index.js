@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Stats, Question, Answer } from "./App";
+import { Stats, QA } from "./App";
+import { IP } from "./ApiHandler";
 
 ReactDOM.render(
     <React.StrictMode>
@@ -11,14 +12,15 @@ ReactDOM.render(
 
 ReactDOM.render(
     <React.StrictMode>
-        <Question />
+        <QA />
     </React.StrictMode>,
-    document.getElementById("questionDiv")
+    document.getElementById("qadiv")
 );
 
 ReactDOM.render(
     <React.StrictMode>
-        <Answer />
+        <IP />
     </React.StrictMode>,
-    document.getElementById("answerDiv")
+    document.getElementById("ip")
 );
+
