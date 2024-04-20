@@ -1,5 +1,6 @@
 {
   "name": "my-react-project",
+  "homepage": "https://mesutdurukal.github.io/nihongo-react",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
