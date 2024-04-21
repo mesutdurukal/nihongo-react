@@ -57,19 +57,17 @@ function fetchAnswer(userInput){
         });
 }
 
-function IP({ updateStats }) {
+function IP() {
     const [ip, setIp] = useState(hostIp);  // Initialize the state with hostIp
     const handleInputChange = (event) => {setIp(event.target.value); };
     return (
         <>
             <input type="text" value={ip} onChange={handleInputChange} placeholder="Enter server IP"/>
             <button onClick={()=>{hostIp = ip;}}>Set Server IP</button>
-            <button onClick={updateStats}>Update Stats</button><><br/></>
+            <button onClick={refreshStats}>Reset Local Stats</button><><br/></>
             <label id="iplabel" style={{ fontFamily: "Arial, sans-serif", fontSize: "14px" }}>{ip}</label>
         </>
     );
 }
-
-
 
 export {refreshStats, fetchStats, fetchAnswer, fetchQuestion, IP }

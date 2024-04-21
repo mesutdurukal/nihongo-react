@@ -20,7 +20,7 @@ function Root() {
             <div style={{ fontSize: '24px' }}>question: {q.question}</div>
         </div> <><br/></>
         <Answer updateStatsCallBack={updateStatsCallBack} nextQuestion={updateQuestionCallBack} />
-        <IP updateStats={updateStatsCallBack}/>
+        <IP/>
     </div>)
 }
 
