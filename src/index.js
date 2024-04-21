@@ -1,26 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Stats, QA } from "./App";
-import { IP } from "./ApiHandler";
+import { Root } from "./App";
 
 ReactDOM.render(
     <React.StrictMode>
-        <Stats />
+        <Root />
     </React.StrictMode>,
-    document.getElementById("statsDiv")
-);
-
-ReactDOM.render(
-    <React.StrictMode>
-        <QA />
-    </React.StrictMode>,
-    document.getElementById("qadiv")
-);
-
-ReactDOM.render(
-    <React.StrictMode>
-        <IP />
-    </React.StrictMode>,
-    document.getElementById("ip")
+    document.getElementById("root")
 );
 

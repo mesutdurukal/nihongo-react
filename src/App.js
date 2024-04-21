@@ -1,17 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import {getStats, fetchQuestion, fetchAnswer} from './ApiHandler'
+import {refreshStats, fetchStats, fetchQuestion, fetchAnswer, IP} from './ApiHandler'
+import {getStyle} from "./Style";
 
-function Stats() {
+function Root() {
     const [stats, setStats] = useState('');
-    useEffect(() => {getStats().then(setStats)}, []);
-    return <div> {stats}</div>
+    const updateStatsCallBack = () => fetchStats().then(setStats);
+    useEffect(() => {refreshStats(); updateStatsCallBack();}, []);
+
+    const [q, setQuestion] = useState({});
+    const updateQuestionCallBack = () => fetchQuestion().then(setQuestion);
+    useEffect(updateQuestionCallBack, []);
+
+    return (<div>
+        <div>{stats}</div>
+        <div>
+            <span>pickMode: {q.pickMode}, </span>
+            <span>category: {q.category}, </span>
+            <span>accuracy: {q.correctlyAnswered}/{q.totalAnswered}</span>
+            <div style={{ fontSize: '24px' }}>question: {q.question}</div>
+        </div> <><br/></>
+        <Answer updateStatsCallBack={updateStatsCallBack} nextQuestion={updateQuestionCallBack} />
+        <IP updateStats={updateStatsCallBack}/>
+    </div>)
 }
 
-function Answer({ fetchQuestion }) {
+function Answer(props) {
     const [userInput, setInput] = useState('');
     const [correctWords, setCorrectWords] = useState('');
     const [result, setResult] = useState('');
     const [status, setStatus] = useState('');
+    const [enterPressed, setEnterPressed] = useState(false);
 
     const resetFields = () => {
         setInput('');           // Clear the input field
@@ -19,7 +37,7 @@ function Answer({ fetchQuestion }) {
         setResult('Result: ');          // Clear results
     };
 
-    const getAnswer = () => {
+    const updateAnswerCallBack = () => {
         fetchAnswer(userInput).then(data => {
             setCorrectWords("Correct answers: " + data.correctWords);
             setResult(`Result: ${data.status}`);
@@ -30,51 +48,30 @@ function Answer({ fetchQuestion }) {
             setResult("ERROR");
         });
     };
-    let c;
-    if (result.includes('true') )
-        c = 'green';
-    else if (result.includes('false') )
-        c = 'red';
-    else
-        c = 'black';
-    const resultStyle = {
-        color: c,
-        fontSize: '20px'
+
+    const userInputKeyCallBack = e => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Stop form submission or any default action
+            updateAnswerCallBack();props.updateStatsCallBack();
+            setEnterPressed(true); // Set the flag to true when Enter is pressed
+        } else if (e.key === ' ' && enterPressed) {
+            e.preventDefault(); // Avoid adding a space in the input
+            resetFields(); props.nextQuestion();
+            setEnterPressed(false); // Reset the flag after space is pressed
+        } else {
+            setEnterPressed(false); // Reset the flag if any other key is pressed
+        }
     };
     return (
         <div>
-            <input
-                type="text"
-                value={userInput}
-                onChange={e => setInput(e.target.value)}
-                onKeyPress={e => e.key === 'Enter' && getAnswer()}
-            />
-            <button onClick={getAnswer}>Check Answer</button>
-            <button onClick={() => { resetFields(); fetchQuestion(); }}>Next Question</button>
-
-            <div style={resultStyle}>{result}</div>
+            <input type="text" value={userInput} onChange={e => setInput(e.target.value)} onKeyPress={userInputKeyCallBack}/>
+            <button onClick={()=>{updateAnswerCallBack(); props.updateStatsCallBack();}}>Check Answer</button>
+            <button onClick={() => { resetFields(); props.nextQuestion(); }}>Next Question</button>
+            <div style={getStyle(result)}>{result}</div>
             <label>{correctWords}</label><><br/><br/></>
             <div>{status}</div>
         </div>
     );
 }
 
-function QA() {
-    const [data, setData] = useState({});
-    const handleFetchQuestion = () => fetchQuestion().then(setData);
-    useEffect(() => handleFetchQuestion(), []);
-
-    return (
-        <div>
-            <div>
-                <span>pickMode: {data.pickMode}, </span>
-                <span>category: {data.category}, </span>
-                <span>accuracy: {data.correctlyAnswered}/{data.totalAnswered}</span>
-                <div style={{ fontSize: '24px' }}>question: {data.question}</div>
-            </div> <><br/></>
-            <Answer fetchQuestion={handleFetchQuestion} />
-        </div>
-    );
-}
-
-export { Stats, QA };
+export { Root };
